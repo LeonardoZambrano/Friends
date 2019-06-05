@@ -18,7 +18,6 @@
 		0D7EBDF422A095040078822B /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7EBDF322A095040078822B /* Result.swift */; };
 		0D7EBDF622A1887C0078822B /* FriendsTableViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7EBDF522A1887C0078822B /* FriendsTableViewViewModel.swift */; };
 		0D7EBDF822A1BD570078822B /* FriendCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7EBDF722A1BD570078822B /* FriendCellViewModel.swift */; };
-		0D7EBDFA22A1BE8E0078822B /* Bindable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7EBDF922A1BE8E0078822B /* Bindable.swift */; };
 		0D7EBDFC22A1CAA80078822B /* FriendTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7EBDFB22A1CAA80078822B /* FriendTableViewCell.swift */; };
 		0D7EBDFE22A1D6370078822B /* FriendTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7EBDFD22A1D6370078822B /* FriendTableViewController.swift */; };
 		324B8FC29A1795A8BAA87C56 /* Pods_Friends.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9ECD2849C09E9F235D48D6 /* Pods_Friends.framework */; };
@@ -52,7 +51,6 @@
 		0D7EBDF322A095040078822B /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		0D7EBDF522A1887C0078822B /* FriendsTableViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewViewModel.swift; sourceTree = "<group>"; };
 		0D7EBDF722A1BD570078822B /* FriendCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCellViewModel.swift; sourceTree = "<group>"; };
-		0D7EBDF922A1BE8E0078822B /* Bindable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bindable.swift; sourceTree = "<group>"; };
 		0D7EBDFB22A1CAA80078822B /* FriendTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendTableViewCell.swift; sourceTree = "<group>"; };
 		0D7EBDFD22A1D6370078822B /* FriendTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendTableViewController.swift; sourceTree = "<group>"; };
 		63C7650E4C367F7974A742BE /* Pods-FriendsTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FriendsTests.debug.xcconfig"; path = "Target Support Files/Pods-FriendsTests/Pods-FriendsTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -134,7 +132,6 @@
 			children = (
 				0D7EBDEF22A08D3B0078822B /* json.swift */,
 				0D7EBDF322A095040078822B /* Result.swift */,
-				0D7EBDF922A1BE8E0078822B /* Bindable.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -310,14 +307,26 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Friends/Pods-Friends-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
 				"${BUILT_PRODUCTS_DIR}/PKHUD/PKHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
+				"${BUILT_PRODUCTS_DIR}/RxRelay/RxRelay.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwiftExt/RxSwiftExt.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PKHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxRelay.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwiftExt.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -384,7 +393,6 @@
 				0D1FFD3722A03E2B008B277F /* AppDelegate.swift in Sources */,
 				0D7EBDEE22A08BA70078822B /* friends.swift in Sources */,
 				0D7EBDF022A08D3B0078822B /* json.swift in Sources */,
-				0D7EBDFA22A1BE8E0078822B /* Bindable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

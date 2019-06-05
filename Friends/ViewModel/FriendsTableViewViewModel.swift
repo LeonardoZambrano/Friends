@@ -5,38 +5,65 @@
 //  Created by VALID on 5/31/19.
 //  Copyright © 2019 VALID Colombia. All rights reserved.
 //
+
+import RxSwift
+import RxCocoa
+
+enum FriendTableViewCellType {
+    case normal(cellViewModel: FriendCellViewModel)
+    case error (message: String)
+    case empty
+}
+
 class FriendsTableViewViewModel {
     
-    enum FriendTableViewCellType {
-        case normal(cellViewModel: FriendCellViewModel)
-        case error (message: String)
-        case empty
+    var friendCells : Observable <[FriendTableViewCellType]> {
+        return cells.asObservable()
     }
     
-    var showLoadingHud: Bindable = Bindable(false)
+    var onShowLoadingHud: Observable <Bool> {
+        return loadInProgress
+        .asObservable()
+        .distinctUntilChanged()
+    }
     
-    let friendCells = Bindable([FriendTableViewCellType]())
+    //let onShowError = PublishSubject()
     let appServerClient : AppServerClient
+    let disposeBag = DisposeBag()
     
-    init(appServerClient:AppServerClient = AppServerClient()) {
+    private let loadInProgress = BehaviorRelay(value: false)
+    private let cells = BehaviorRelay <[FriendTableViewCellType]>(value: [])
+    
+    init(appServerClient: AppServerClient = AppServerClient()) {
         self.appServerClient = appServerClient
     }
     
     func getFriends() {
-        showLoadingHud.value = true
-        appServerClient.getFriends(completion: { [weak self] result in
-            self?.showLoadingHud.value = false
-            switch result {
-            case .success(let friends):
+        loadInProgress.accept(true)
+        
+        appServerClient
+        .getFriends()
+        .subscribe (
+            onNext : {[weak self] friends in
+                self?.loadInProgress.accept(false)
                 guard friends.count > 0 else {
-                    self?.friendCells.value = [.empty]
+                    self?.cells.accept([.empty])
                     return
                 }
-                self?.friendCells.value = friends.compactMap{ .normal(cellViewModel: $0 as FriendCellViewModel)}
-            case .failure(let error):
-                self?.friendCells.value = [.error(message: error?.getErrorMessage() ?? "Loading failed, check network connection")]
+                self?.cells.accept(friends.compactMap {
+                    .normal(cellViewModel: FriendCellViewModel(friend: $0)) }
+            )},
+            onError : {[weak self] error in
+                self?.loadInProgress.accept(false)
+                self?.cells.accept([
+                    .error(
+                    message: (error as?
+                    AppServerClient.GetFriendsFailureReason)?.getErrorMessage() ?? "Loading failed, check network connection"
+                    )
+                    ])
             }
-        })
+        )
+            .disposed(by: disposeBag)
     }
 }
 // MARk: AppServerClient.GetFriendsFailureReason

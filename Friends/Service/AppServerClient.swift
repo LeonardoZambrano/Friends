@@ -7,6 +7,7 @@
 //
 
 import Alamofire
+import RxSwift
 
 // Mark: AppServerClient
 class AppServerClient {
@@ -15,31 +16,34 @@ class AppServerClient {
         case unAuthorized = 401
         case notFound = 404
     }
-    
-    typealias GetFriendsResult = Result<[Friend], GetFriendsFailureReason>
-    typealias GetFriendsCompletion = (_ result: GetFriendsResult) -> Void
-    
-    func getFriends(completion: @escaping GetFriendsCompletion) {
+   
+    func getFriends() -> Observable <[Friend]> {
+        return Observable.create {observer -> Disposable in
         Alamofire.request("http://friendservice.herokuapp.com/listFriends")
             .validate()
             .responseJSON { response in
                 switch response.result {
                 case .success:
-                    guard let jsonArray = response.result.value as? [JSON] else {
-                        completion(.failure(nil))
+                    guard let data = response.data else {
+                        observer.onError(response.error ?? GetFriendsFailureReason.notFound)
                         return
                     }
-                    completion(.success(payload: jsonArray.compactMap {
-                        Friend(json: $0)
-                    }))
-                    //completion(.success(payload: []))
-                case .failure(_):
+                    do {
+                        let friends = try JSONDecoder().decode([Friend].self, from: data)
+                        observer.onNext(friends)
+                    } catch {
+                        observer.onError(error)
+                    }
+                    
+                case .failure( let error):
                     if let statusCode = response.response?.statusCode,
                         let reason = GetFriendsFailureReason(rawValue: statusCode) {
-                        completion(.failure(reason))
+                        observer.onError(reason)
                     }
-                    completion(.failure(nil))
+                    observer.onError(error)
                 }
             }
+            return Disposables.create()
+        }
     }
 }

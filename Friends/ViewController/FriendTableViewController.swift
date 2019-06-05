@@ -7,10 +7,14 @@
 //
 import UIKit
 import PKHUD
+import RxSwift
+import RxDataSources
 
-class FriendsTableViewController: UITableViewController {
+class FriendsTableViewController: UIViewController {
+    @IBOutlet var tableView: UITableView!
     
     let viewModel :FriendsTableViewViewModel = FriendsTableViewViewModel()
+    let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,46 +23,38 @@ class FriendsTableViewController: UITableViewController {
     }
     
     func bindViewModel(){
-        viewModel.friendCells.bindAndFire() { [weak self] _ in
-            self?.tableView?.reloadData()
+        viewModel.friendCells.bind(to: self.tableView.rx.items) { tableView, index, element in
+            let indexPath = IndexPath(item: index, section: 0)
             
-        }
-        viewModel.showLoadingHud.bind() { [weak self] visible in
-            if self != nil {
-                PKHUD.sharedHUD.contentView = PKHUDSystemActivityIndicatorView()
-                visible ? PKHUD.sharedHUD.show(onView: self!.view) : PKHUD.sharedHUD.hide()
+            switch element {
+            case .normal (let viewModel):
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "friendCell", for: indexPath) as? FriendTableViewCell else {
+                    return UITableViewCell()
+                }
+                cell.viewModel = viewModel
+                return cell
+            case .error(let message):
+                let cell = UITableViewCell()
+                cell.isUserInteractionEnabled = false
+                cell.textLabel?.text = message
+                return cell
+            case .empty:
+                let cell = UITableViewCell()
+                cell.isUserInteractionEnabled = false
+                cell.textLabel?.text = "No data available"
+                return cell
             }
-        }
-    }
-    
-}
-
-// MARK: - UITableViewDelegate
-extension FriendsTableViewController {
-    
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.friendCells.value.count
-    }
-    
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+            }.disposed(by: disposeBag)
         
-        switch viewModel.friendCells.value[indexPath.row] {
-        case .normal(let viewModel):
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "friendCell") as? FriendTableViewCell else {
-                return UITableViewCell()
-            }            
-            cell.viewModel = viewModel
-            return cell
-        case .error(let message):
-            let cell = UITableViewCell()
-            cell.isUserInteractionEnabled = false
-            cell.textLabel?.text = message
-            return cell
-        case .empty:
-            let cell = UITableViewCell()
-            cell.isUserInteractionEnabled = false
-            cell.textLabel?.text = "No data available"
-            return cell
-        }
+        viewModel
+            .onShowLoadingHud
+            .map { [weak self] in self?.setLoadingHud(visible: $0) }
+            .subscribe()
+            .disposed(by: disposeBag)
+    }
+    
+    private func setLoadingHud(visible: Bool) {
+        PKHUD.sharedHUD.contentView = PKHUDSystemActivityIndicatorView()
+        visible ? PKHUD.sharedHUD.show(onView: view) : PKHUD.sharedHUD.hide()
     }
 }

@@ -6,7 +6,7 @@
 //  Copyright © 2019 VALID Colombia. All rights reserved.
 //
 
-struct Friend {
+struct Friend : Codable {
     let firstname : String
     let lastname : String
     let phonenumber : String
